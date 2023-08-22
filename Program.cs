@@ -15,9 +15,11 @@ namespace sparta_dungeon
         private static Character player;
         private static Character addedstat;
         private static Inventory inventory = new();
+        private static Inventory shop = new();
         static void Main(string[] args)
         {
             BasicStatus();
+            BasicInventory();
             GameStart();
         }
         static void GameStart()
@@ -29,10 +31,11 @@ namespace sparta_dungeon
             Console.WriteLine();
             Console.WriteLine("\x1b[38;5;" + 15 + "m1. 상태 보기");
             Console.WriteLine("2. 인벤토리");
+            Console.WriteLine("3. 상점");
             Console.WriteLine();
             Console.WriteLine("\x1b[38;5;" + 15 + "m원하시는 행동을 입력해주세요.");
 
-            int answer = CheckValidInput(1, 2);
+            int answer = CheckValidInput(1, 3);
             switch (answer)
             {
                 case 1:
@@ -42,14 +45,19 @@ namespace sparta_dungeon
                 case 2:
                     ShowInventory();
                     break;
+
+                case 3:
+                    ShowShop();
+                    break;
             }
         }
-
-        static Inventory BasicStatus()
+        static void BasicStatus()
         {
             player = new Character("이홍준", "궁수", 1, 10, 5, 100, 1500);
             addedstat = new Character("이홍준", "궁수", 0, 0, 0, 0, 0);
-
+        }
+        static Inventory BasicInventory()
+        {
             Item weap1 = new Item("낡은 검", "공격력", 2, "쉽게 볼 수 있는 낡은 검입니다.", false);
             Item armo1 = new Item("무쇠 갑옷", "방어력", 5, "무쇠로 만든 튼튼한 갑옷입니다.", false);
             Item acce1 = new Item("도금 목걸이", "체력", 30, "싸구려에 도금시킨 목걸이입니다.", false);
@@ -59,6 +67,17 @@ namespace sparta_dungeon
             inventory.items.Add(acce1);
 
             return inventory;
+        }
+        static Inventory Shop()
+        {
+            Item weap2 = new Item("보급형 검", "공격력", 5, "첫 모험에 안성맞춤인 검입니다.", false);
+            Item weap3 = new Item("군용 검", "공격력", 8, "쉽게 볼 수 없는 군용 검입니다.", false);
+            Item armo2 = new Item("사슬 갑옷", "방어력", 6, "사슬로 만든 유연한 갑옷입니다.", false);
+            Item armo3 = new Item("판금 갑옷", "방어력", 10, "판금으로 만든 기사용 갑옷입니다.", false);
+            Item acce2 = new Item("은 목걸이", "체력", 50, "어둠 속에서도 빛나는 은 목걸이입니다.", false);
+            Item acce3 = new Item("금 목걸이", "체력", 100, "진짜 금 목걸이입니다.", false);
+
+            return shop;
         }
 
         static void ShowStatus()
@@ -138,10 +157,35 @@ namespace sparta_dungeon
                     break;
             }
         }
+        static void ShowShop()
+        {
+            Console.Clear();
+
+            Console.WriteLine("\x1b[38;5;" + 3 + "m상점");
+            Console.WriteLine("필요한 아이템을 얻을 수 있는 상점입니다.");
+            Console.WriteLine();
+            Console.WriteLine("\x1b[38;5;" + 15 + "m[보유 골드]");
+            Console.WriteLine("\x1b[38;5;" + 9 + $"m{player.Gold} " + "\x1b[38;5;" + 15 + "mG");
+
+
+            Console.WriteLine();
+            Console.WriteLine("\x1b[38;5;" + 14 + "m0. 나가기");
+            Console.WriteLine();
+            Console.WriteLine("\x1b[38;5;" + 15 + "m원하시는 행동을 입력해주세요.");
+
+            int answer = CheckValidInput(0, 0);
+            switch (answer)
+            {
+                case 0:
+                    GameStart();
+                    break;
+            }
+        }
         static int CheckValidInput(int min, int max)
         {
             while (true)
             {
+                Console.Write(">> ");
                 string input = Console.ReadLine();
 
                 bool parseSuccess = int.TryParse(input, out var ret);
@@ -161,37 +205,37 @@ namespace sparta_dungeon
             {
                 item.Equip = false;
                 addedstat.Atk -= item.Effect;
-                player.Atk -= addedstat.Atk;
+                player.Atk -= item.Effect;
             }
             else if (item.Equip == false && item.Type.Equals("공격력"))        // 장착 (함수로 바꿔서 줄이면좋겠다)
             {
                 item.Equip = true;
                 addedstat.Atk += item.Effect;
-                player.Atk += addedstat.Atk;
+                player.Atk += item.Effect;
             }
             else if (item.Equip == true && item.Type.Equals("방어력"))
             {
                 item.Equip = false;
                 addedstat.Def -= item.Effect;
-                player.Def -= addedstat.Def;
+                player.Def -= item.Effect;
             }
             else if (item.Equip == false && item.Type.Equals("방어력"))
             {
                 item.Equip = true;
                 addedstat.Def += item.Effect;
-                player.Def += addedstat.Def;
+                player.Def += item.Effect;
             }
             else if (item.Equip == true && item.Type.Equals("체력"))
             {
                 item.Equip = false;
                 addedstat.Hp -= item.Effect;
-                player.Hp -= addedstat.Hp;
+                player.Hp -= item.Effect;
             }
             else if (item.Equip == false && item.Type.Equals("체력"))
             {
                 item.Equip = true;
                 addedstat.Hp += item.Effect;
-                player.Hp += addedstat.Hp;
+                player.Hp += item.Effect;
             }
             // 아이템의 장착 여부를 확인한다
             // 아이템이 미장착 상태라면 장착시켜 ShowInventory 에서 E 를 붙여주고 장비의 능력치를 캐릭터의 능력치에 합산시켜 보여준다.
