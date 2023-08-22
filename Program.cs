@@ -24,13 +24,13 @@ namespace sparta_dungeon
         {
             Console.Clear();
 
-            Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다.");
+            Console.WriteLine("\x1b[38;5;" + 3 + "m스파르타 마을에 오신 여러분 환영합니다.");
             Console.WriteLine("이곳에서 던전으로 들어가기 전 활동을 할 수 있습니다.");
             Console.WriteLine();
-            Console.WriteLine("1. 상태 보기");
+            Console.WriteLine("\x1b[38;5;" + 15 + "m1. 상태 보기");
             Console.WriteLine("2. 인벤토리");
             Console.WriteLine();
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            Console.WriteLine("\x1b[38;5;" + 15 + "m원하시는 행동을 입력해주세요.");
 
             int answer = CheckValidInput(1, 2);
             switch (answer)
@@ -65,20 +65,20 @@ namespace sparta_dungeon
         {
             Console.Clear();
 
-            Console.WriteLine("내 상태");
+            Console.WriteLine("\x1b[38;5;" + 3 + "m내 상태");
             Console.WriteLine("캐릭터의 정보가 표시됩니다.");
 
             Console.WriteLine();
-            Console.WriteLine($"Lv. {player.Level}");
+            Console.WriteLine("\x1b[38;5;" + 15 + $"mLv. {player.Level}");
             Console.WriteLine($"{player.Name} ({player.Job})");
-            Console.WriteLine($"공격력 : {player.Atk} (+{addedstat.Atk})");
-            Console.WriteLine($"방어력 : {player.Def} (+{addedstat.Def})");
-            Console.WriteLine($"체력 : {player.Hp} (+{addedstat.Hp})");
+            Console.WriteLine($"공격력 : {player.Atk} (" + "\x1b[38;5;" + 2 + $"m+{addedstat.Atk}" + "\x1b[38;5;" + 15 + "m)");
+            Console.WriteLine($"방어력 : {player.Def} (" + "\x1b[38;5;" + 2 + $"m+{addedstat.Def}" + "\x1b[38;5;" + 15 + "m)");
+            Console.WriteLine($"체력 : {player.Hp} (" + "\x1b[38;5;" + 2 + $"m+{addedstat.Hp}" + "\x1b[38;5;" + 15 + "m)");
             Console.WriteLine($"Gold : {player.Gold}G");
             Console.WriteLine();
-            Console.WriteLine("0. 나가기");
+            Console.WriteLine("\x1b[38;5;" + 14 + "m0. 나가기");
             Console.WriteLine();
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            Console.WriteLine("\x1b[38;5;" + 15 + "m원하시는 행동을 입력해주세요.");
 
             int answer = CheckValidInput(0, 0);
             switch (answer)
@@ -93,32 +93,32 @@ namespace sparta_dungeon
         {
             Console.Clear();
 
-            Console.WriteLine("인벤토리 - 장착 관리");
+            Console.WriteLine("\x1b[38;5;" + 3 + "m인벤토리 - 장착 관리");
             Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
             Console.WriteLine();
-            Console.WriteLine("[아이템 목록]");
+            Console.WriteLine("\x1b[38;5;" + 15 + "m[아이템 목록]");
 
             int i = 1;
             foreach (var Item in inventory.items)
             {
                 if (Item.Equip == true)
                 {
-                    Console.WriteLine($"- {i} [E]{Item.Name} | {Item.Type} +{Item.Effect} | {Item.Info}");
+                    Console.WriteLine($"{i}. " + "\x1b[38;5;" + 6 + "m[E]" + "\x1b[38;5;" + 15 + $"m {Item.Name} | {Item.Type} +{Item.Effect} | {Item.Info}");
                     i++;
                 }
                 else if (Item.Equip == false)
                 {
-                    Console.WriteLine($"- {i} {Item.Name} | {Item.Type} +{Item.Effect} | {Item.Info}");
+                    Console.WriteLine($"{i}. {Item.Name} | {Item.Type} +{Item.Effect} | {Item.Info}");
                     i++;
                 }
             }
 
             Console.WriteLine();
-            Console.WriteLine("0. 나가기");
+            Console.WriteLine("\x1b[38;5;" + 14 + "m0. 나가기");
             Console.WriteLine();
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            Console.WriteLine("\x1b[38;5;" + 15 + "m원하시는 행동을 입력해주세요.");
 
-            int answer = CheckValidInput(0, i);
+            int answer = CheckValidInput(0, i - 1);
             switch (answer)
             {
                 case 0:
@@ -151,7 +151,8 @@ namespace sparta_dungeon
                         return ret;
                 }
 
-                Console.WriteLine("잘못된 입력입니다.");
+                Console.WriteLine("\x1b[38;5;" + 1 + "m잘못된 입력입니다.");
+                Console.ResetColor();
             }
         }
         static void EquipItem(Item item)
@@ -162,7 +163,7 @@ namespace sparta_dungeon
                 addedstat.Atk -= item.Effect;
                 player.Atk -= addedstat.Atk;
             }
-            else if (item.Equip == false && item.Type.Equals("공격력"))        // 장착 
+            else if (item.Equip == false && item.Type.Equals("공격력"))        // 장착 (함수로 바꿔서 줄이면좋겠다)
             {
                 item.Equip = true;
                 addedstat.Atk += item.Effect;
